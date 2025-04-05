@@ -13,8 +13,19 @@ export interface DemographicData {
 
 export interface CountyData {
     id: string;
-    demographics: { population: number; medianIncome: number; SVI: number };
-    airQuality: { AQI: number; status: string };
+    position?: {
+        lat: number;
+        lng: number;
+    };
+    demographics: {
+        population: number;
+        medianIncome: number;
+        SVI: number;
+    };
+    airQuality: {
+        AQI: number;
+        status: string;
+    };
 }
 
 export interface CSVData {

@@ -150,9 +150,15 @@ const CountyMap: React.FC = () => {
         const countyName = feature.getProperty('NAME') || feature.getProperty('name');
         const countyId = countyName ? `${countyName} County` : null;
 
-        if (countyId) {
+        if (countyId && event.latLng) {
             const data = await fetchCountyData(countyId);
-            setSelectedCounty(data);
+            setSelectedCounty({
+                ...data,
+                position: {
+                    lat: event.latLng.lat(),
+                    lng: event.latLng.lng()
+                }
+            });
             console.log('Clicked county:', data);
         }
     };
@@ -304,6 +310,24 @@ const CountyMap: React.FC = () => {
                     />
                 ))}
 
+                {selectedCounty && (
+                    <InfoWindow
+                        position={selectedCounty.position}
+                        onCloseClick={() => setSelectedCounty(null)}
+                    >
+                        <div className="p-2">
+                            <h2 className="text-lg font-bold mb-2">{selectedCounty.id}</h2>
+                            <div className="text-sm">
+                                <p><strong>Population:</strong> {selectedCounty.demographics.population}</p>
+                                <p><strong>Median Income:</strong> ${selectedCounty.demographics.medianIncome}</p>
+                                <p><strong>SVI:</strong> {selectedCounty.demographics.SVI.toFixed(2)}</p>
+                                <p><strong>Air Quality:</strong> {selectedCounty.airQuality.status}</p>
+                                <p><strong>AQI:</strong> {selectedCounty.airQuality.AQI.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </InfoWindow>
+                )}
+
                 {selectedFacility && (
                     <InfoWindow
                         position={{
@@ -445,31 +469,6 @@ const CountyMap: React.FC = () => {
             {isLoading && (
                 <div className="absolute top-4 left-4 bg-white p-4 rounded shadow-md">
                     Loading data...
-                </div>
-            )}
-
-            {selectedCounty && (
-                <div className="absolute top-4 right-4 bg-white p-4 rounded shadow-md w-80">
-                    <h2 className="text-xl font-bold mb-2">County Details</h2>
-                    <p><strong>ID:</strong> {selectedCounty.id}</p>
-                    <p>
-                        <strong>Population:</strong> {selectedCounty.demographics.population}
-                    </p>
-                    <p>
-                        <strong>Median Income:</strong> ${selectedCounty.demographics.medianIncome}
-                    </p>
-                    <p>
-                        <strong>Air Quality Index:</strong> {selectedCounty.airQuality.AQI}
-                    </p>
-                    <p>
-                        <strong>Status:</strong> {selectedCounty.airQuality.status}
-                    </p>
-                    <button
-                        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded"
-                        onClick={() => setSelectedCounty(null)}
-                    >
-                        Close
-                    </button>
                 </div>
             )}
         </LoadScript>

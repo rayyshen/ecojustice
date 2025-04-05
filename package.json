@@ -12,6 +12,7 @@
     "@arcgis/core": "^4.32.9",
     "@react-google-maps/api": "^2.20.6",
     "arcgis": "^0.0.2",
+    "framer-motion": "^12.6.3",
     "geojson": "^0.5.0",
     "leaflet": "^1.9.4",
     "next": "15.2.4",
