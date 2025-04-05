@@ -1,4 +1,4 @@
-// components/CountyMap.tsx
+// CountyMap
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Data, Marker, InfoWindow } from '@react-google-maps/api';
 import { count } from 'console';
@@ -25,6 +25,11 @@ interface FacilityData {
     type?: string;
 }
 
+interface DemographicData {
+    countyName: string;
+    minorityPercentage: number;
+}
+
 const CountyMap: React.FC = () => {
     const [selectedCounty, setSelectedCounty] = useState<CountyData | null>(null);
     const [countyData, setCountyData] = useState<Map<string, number>>(new Map());
@@ -34,6 +39,11 @@ const CountyMap: React.FC = () => {
     const [facilities, setFacilities] = useState<FacilityData[]>([]);
     const [selectedFacility, setSelectedFacility] = useState<FacilityData | null>(null);
     const [proposedFacilities, setProposedFacilities] = useState<FacilityData[]>([]);
+    const [showSVI, setShowSVI] = useState(true);
+    const [showDemographic, setShowDemographic] = useState(false);
+    const [demographicData, setDemographicData] = useState<Map<string, DemographicData>>(new Map());
+    const [showCurrentFacilities, setShowCurrentFacilities] = useState(true);
+    const [showProposedFacilities, setShowProposedFacilities] = useState(true);
 
     const getColorForSVI = (svi: number) => {
         if (isNaN(svi) || svi === null) return '#CCCCCC';
@@ -66,6 +76,37 @@ const CountyMap: React.FC = () => {
         return isNaN(RPLTheme) ? 0 : RPLTheme / 20;
     };
 
+    const processDemographicData = (data: string) => {
+        const rows = data.split('\n').map(row => row.split(','));
+        const headerRow = rows[0];
+
+        const processedData = new Map<string, DemographicData>();
+
+        rows.slice(1).forEach(row => {
+
+            const countyName = row[4];    // County Name
+            const year = row[5]?.trim();          // Year
+            const ageGroup = row[6]?.trim();      // Age Group
+            const totalPop = parseInt(row[7]);     // Total Population
+            const whitePop = parseInt(row[8]);     // White Alone Population
+
+            if (year === '5' && ageGroup === '0') {
+                const minorityPercentage = (totalPop - whitePop) / totalPop;
+
+                if (!isNaN(minorityPercentage)) {
+                    processedData.set(countyName, {
+                        countyName: countyName,
+                        minorityPercentage
+                    });
+                    console.log(`Processed ${countyName}: ${minorityPercentage}`);
+                }
+            }
+        });
+
+        console.log(`Total counties processed: ${processedData.size}`);
+        return processedData;
+    };
+
     useEffect(() => {
         const loadSVIData = async () => {
             setIsLoading(true);
@@ -95,6 +136,21 @@ const CountyMap: React.FC = () => {
         };
 
         loadSVIData();
+    }, []);
+
+    useEffect(() => {
+        const loadDemographicData = async () => {
+            try {
+                const response = await fetch('/data/cc-est2023-alldata.csv');
+                const csvText = await response.text();
+                const processed = processDemographicData(csvText);
+                setDemographicData(processed);
+            } catch (error) {
+                console.error('Error loading demographic data:', error);
+            }
+        };
+
+        loadDemographicData();
     }, []);
 
     const fetchCountyData = async (countyId: string): Promise<CountyData> => {
@@ -192,11 +248,23 @@ const CountyMap: React.FC = () => {
         loadProposedFacilities();
     }, []);
 
+    const getColorForDemographic = (countyName: string) => {
+        const data = demographicData.get(countyName);
+        if (!data) {
+            console.log(`No demographic data for: ${countyName}`);
+            return '#CCCCCC';
+        }
+        const percentage = data.minorityPercentage;
+        console.log(`County: ${countyName}, Minority %: ${percentage}`);
+        return percentage > 0.5 ? '#9C27B0' : '#2196F3';
+    };
+
     return (
         <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
-            <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={4}>
+            <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={4} options={{ disableDefaultUI: true }}>
                 {!isLoading && csvData && (
                     <Data
+                        key={`${showSVI}-${showDemographic}`}
                         onLoad={(dataLayer) => {
                             fetch('/data/counties.geojson')
                                 .then(response => response.json())
@@ -204,12 +272,27 @@ const CountyMap: React.FC = () => {
                                     dataLayer.addGeoJson(data);
                                     dataLayer.setStyle((feature) => {
                                         const countyName = feature.getProperty('NAME') + ' County';
-                                        const svi = getRPLTheme(countyName);
+                                        if (showSVI) {
+                                            const svi = getRPLTheme(countyName);
+                                            return {
+                                                fillColor: getColorForSVI(svi),
+                                                strokeColor: '#666666',
+                                                strokeWeight: 0.5,
+                                                fillOpacity: 0.8,
+                                            };
+                                        } else if (showDemographic) {
+                                            return {
+                                                fillColor: getColorForDemographic(countyName),
+                                                strokeColor: '#666666',
+                                                strokeWeight: 0.8,
+                                                fillOpacity: 0.8,
+                                            };
+                                        }
                                         return {
-                                            fillColor: getColorForSVI(svi),
+                                            fillColor: '#CCCCCC',
                                             strokeColor: '#666666',
                                             strokeWeight: 0.5,
-                                            fillOpacity: 0.8,
+                                            fillOpacity: 0.1,
                                         };
                                     });
                                 });
@@ -218,7 +301,7 @@ const CountyMap: React.FC = () => {
                     />
                 )}
 
-                {facilities.map((facility, index) => (
+                {showCurrentFacilities && facilities.map((facility, index) => (
                     <Marker
                         key={index}
                         position={{
@@ -232,7 +315,7 @@ const CountyMap: React.FC = () => {
                     />
                 ))}
 
-                {proposedFacilities.map((facility, index) => (
+                {showProposedFacilities && proposedFacilities.map((facility, index) => (
                     <Marker
                         key={`proposed-${index}`}
                         position={{
@@ -268,6 +351,116 @@ const CountyMap: React.FC = () => {
 
             </GoogleMap>
 
+            {/* Update layer controls */}
+            <div className="absolute top-4 left-4 z-10 bg-white p-4 rounded shadow-md">
+                <h3 className="text-sm font-bold mb-2">Map Layers</h3>
+                <div className="flex flex-col gap-2">
+                    <div className="border-b pb-2 mb-2">
+                        <label className="flex items-center cursor-pointer">
+                            <input
+                                type="radio"
+                                name="mapLayer"
+                                checked={showSVI}
+                                onChange={() => {
+                                    setShowSVI(true);
+                                    setShowDemographic(false);
+                                }}
+                                className="mr-2"
+                            />
+                            Show SVI Data
+                        </label>
+                        <label className="flex items-center cursor-pointer">
+                            <input
+                                type="radio"
+                                name="mapLayer"
+                                checked={showDemographic}
+                                onChange={() => {
+                                    setShowDemographic(true);
+                                    setShowSVI(false);
+                                }}
+                                className="mr-2"
+                            />
+                            Show Demographic Data
+                        </label>
+                        <label className="flex items-center cursor-pointer">
+                            <input
+                                type="radio"
+                                name="mapLayer"
+                                checked={!showSVI && !showDemographic}
+                                onChange={() => {
+                                    setShowSVI(false);
+                                    setShowDemographic(false);
+                                }}
+                                className="mr-2"
+                            />
+                            No Layer
+                        </label>
+                    </div>
+                    <div>
+                        <h4 className="text-sm font-semibold mb-1">Facilities</h4>
+                        <label className="flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={showCurrentFacilities}
+                                onChange={(e) => setShowCurrentFacilities(e.target.checked)}
+                                className="mr-2"
+                            />
+                            Current Facilities
+                        </label>
+                        <label className="flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={showProposedFacilities}
+                                onChange={(e) => setShowProposedFacilities(e.target.checked)}
+                                className="mr-2"
+                            />
+                            Proposed Facilities
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            {/* Modify the legend to show appropriate information based on active layer */}
+            <div className="absolute bottom-4 left-4 bg-white p-4 rounded shadow-md">
+                {showSVI ? (
+                    <>
+                        <h3 className="text-sm font-bold mb-2">Social Vulnerability Index</h3>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center">
+                                <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#4CAF50' }}></div>
+                                <span className="text-xs">Low (0.00 - 0.25)</span>
+                            </div>
+                            <div className="flex items-center">
+                                <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#FFEB3B' }}></div>
+                                <span className="text-xs">Medium-Low (0.25 - 0.50)</span>
+                            </div>
+                            <div className="flex items-center">
+                                <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#FF9800' }}></div>
+                                <span className="text-xs">Medium-High (0.50 - 0.75)</span>
+                            </div>
+                            <div className="flex items-center">
+                                <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#F44336' }}></div>
+                                <span className="text-xs">High (0.75 - 1.00)</span>
+                            </div>
+                        </div>
+                    </>
+                ) : showDemographic ? (
+                    <>
+                        <h3 className="text-sm font-bold mb-2">Population Demographics</h3>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center">
+                                <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#9C27B0' }}></div>
+                                <span className="text-xs">Minority Majority</span>
+                            </div>
+                            <div className="flex items-center">
+                                <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#2196F3' }}></div>
+                                <span className="text-xs">White Majority</span>
+                            </div>
+                        </div>
+                    </>
+                ) : null}
+            </div>
+
             {error && (
                 <div className="absolute top-4 left-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     Error loading data: {error}
@@ -279,28 +472,6 @@ const CountyMap: React.FC = () => {
                     Loading data...
                 </div>
             )}
-
-            <div className="absolute bottom-4 left-4 bg-white p-4 rounded shadow-md">
-                <h3 className="text-sm font-bold mb-2">Social Vulnerability Index</h3>
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center">
-                        <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#4CAF50' }}></div>
-                        <span className="text-xs">Low (0.00 - 0.25)</span>
-                    </div>
-                    <div className="flex items-center">
-                        <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#FFEB3B' }}></div>
-                        <span className="text-xs">Medium-Low (0.25 - 0.50)</span>
-                    </div>
-                    <div className="flex items-center">
-                        <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#FF9800' }}></div>
-                        <span className="text-xs">Medium-High (0.50 - 0.75)</span>
-                    </div>
-                    <div className="flex items-center">
-                        <div className="w-4 h-4 mr-2" style={{ backgroundColor: '#F44336' }}></div>
-                        <span className="text-xs">High (0.75 - 1.00)</span>
-                    </div>
-                </div>
-            </div>
 
             {selectedCounty && (
                 <div className="absolute top-4 right-4 bg-white p-4 rounded shadow-md w-80">
