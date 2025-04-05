@@ -1,14 +1,6 @@
-export interface FacilityData {
-    name: string;
-    latitude: number;
-    longitude: number;
-    TEQ: number;
-    type?: string;
-}
-
-export interface DemographicData {
-    countyName: string;
-    minorityPercentage: number;
+export interface CSVData {
+    headers: string[];
+    rows: string[][];
 }
 
 export interface CountyData {
@@ -20,15 +12,25 @@ export interface CountyData {
     demographics: {
         population: number;
         medianIncome: number;
+    };
+    data: {
         SVI: number;
-    };
-    airQuality: {
-        AQI: number;
-        status: string;
-    };
+        risk: string;
+    }
 }
 
-export interface CSVData {
-    headers: string[];
-    rows: string[][];
+export interface FacilityData {
+    name: string;
+    latitude: number;
+    longitude: number;
+    TEQ: number;
+    type?: string;
+    governor: string;
+    date: string;
+}
+
+export interface DemographicData {
+    countyName: string;
+    minorityPercentage: number;
+    population: number;
 }
