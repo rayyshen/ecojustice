@@ -1,6 +1,6 @@
 // components/CountyMap.tsx
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Data } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Data, Marker, InfoWindow } from '@react-google-maps/api';
 import { count } from 'console';
 
 const mapContainerStyle = { width: '100%', height: '600px' };
@@ -17,23 +17,32 @@ interface CSVData {
     rows: string[][];
 }
 
+interface FacilityData {
+    name: string;
+    latitude: number;
+    longitude: number;
+    TEQ: number;
+    type?: string;
+}
+
 const CountyMap: React.FC = () => {
     const [selectedCounty, setSelectedCounty] = useState<CountyData | null>(null);
     const [countyData, setCountyData] = useState<Map<string, number>>(new Map());
     const [csvData, setCsvData] = useState<CSVData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [facilities, setFacilities] = useState<FacilityData[]>([]);
+    const [selectedFacility, setSelectedFacility] = useState<FacilityData | null>(null);
+    const [proposedFacilities, setProposedFacilities] = useState<FacilityData[]>([]);
 
-    // Updated color function with more distinct colors
     const getColorForSVI = (svi: number) => {
         if (isNaN(svi) || svi === null) return '#CCCCCC';
-        if (svi < 0.25) return '#4CAF50';  // Brighter green
-        if (svi < 0.5) return '#FFEB3B';   // Brighter yellow
-        if (svi < 0.75) return '#FF9800';  // Brighter orange
-        return '#F44336';                  // Brighter red
+        if (svi < 0.25) return '#4CAF50';
+        if (svi < 0.5) return '#FFEB3B';
+        if (svi < 0.75) return '#FF9800';
+        return '#F44336';
     };
 
-    // Updated getRPLTheme function with better error handling
     const getRPLTheme = (countyName: string): number => {
         if (!csvData) return 12;
 
@@ -88,9 +97,8 @@ const CountyMap: React.FC = () => {
         loadSVIData();
     }, []);
 
-    // Dummy function to simulate fetching extra county data
     const fetchCountyData = async (countyId: string): Promise<CountyData> => {
-        const RPLTotal = getRPLTheme(countyId); // Normalize to 0-1 scale
+        const RPLTotal = getRPLTheme(countyId);
 
         return {
             id: countyId,
@@ -108,7 +116,6 @@ const CountyMap: React.FC = () => {
 
     const onFeatureClick = async (event: google.maps.Data.MouseEvent) => {
         const feature = event.feature;
-        // Get the county name from the feature properties
         const countyName = feature.getProperty('NAME') || feature.getProperty('name');
         const countyId = countyName ? `${countyName} County` : null;
 
@@ -118,6 +125,72 @@ const CountyMap: React.FC = () => {
             console.log('Clicked county:', data);
         }
     };
+
+    useEffect(() => {
+        const loadFacilityData = async () => {
+            try {
+                const response = await fetch('/data/TEQ_2023.csv');
+                const csvText = await response.text();
+                const rows = csvText.split('\n').map(row => row.split(','));
+                const headerRow = rows[0];
+
+
+                const nameIndex = headerRow.indexOf('Facility Name');
+                const latIndex = headerRow.indexOf('Latitude');
+                const lonIndex = headerRow.indexOf('Longitude');
+                const teqIndex = headerRow.indexOf('TEQ');
+
+                const facilityData = rows.slice(1)
+                    .filter(row => row.length >= 4)
+                    .map(row => ({
+                        name: row[nameIndex],
+                        latitude: parseFloat(row[latIndex]),
+                        longitude: parseFloat(row[lonIndex]),
+                        TEQ: parseFloat(row[teqIndex])
+                    }))
+                    .filter(facility => !isNaN(facility.latitude) && !isNaN(facility.longitude));
+
+                setFacilities(facilityData);
+            } catch (error) {
+                console.error('Error loading facility data:', error);
+            }
+        };
+
+        loadFacilityData();
+    }, []);
+
+    useEffect(() => {
+        const loadProposedFacilities = async () => {
+            try {
+                const response = await fetch('/data/proposed_industrial_plants.csv');
+                const csvText = await response.text();
+                const rows = csvText.split('\n').map(row => row.split(','));
+                const headerRow = rows[0];
+
+                const nameIndex = headerRow.indexOf('Name');
+                const latIndex = headerRow.indexOf('Latitude');
+                const lonIndex = headerRow.indexOf('Longitude');
+                const typeIndex = headerRow.indexOf('Type');
+
+                const facilityData = rows.slice(1)
+                    .filter(row => row.length >= 4)
+                    .map(row => ({
+                        name: row[nameIndex],
+                        latitude: parseFloat(row[latIndex]),
+                        longitude: parseFloat(row[lonIndex]),
+                        TEQ: 0,
+                        type: row[typeIndex]
+                    }))
+                    .filter(facility => !isNaN(facility.latitude) && !isNaN(facility.longitude));
+
+                setProposedFacilities(facilityData);
+            } catch (error) {
+                console.error('Error loading proposed facility data:', error);
+            }
+        };
+
+        loadProposedFacilities();
+    }, []);
 
     return (
         <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
@@ -144,6 +217,55 @@ const CountyMap: React.FC = () => {
                         onClick={onFeatureClick}
                     />
                 )}
+
+                {facilities.map((facility, index) => (
+                    <Marker
+                        key={index}
+                        position={{
+                            lat: facility.latitude,
+                            lng: facility.longitude
+                        }}
+                        onClick={() => setSelectedFacility(facility)}
+                        icon={{
+                            url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                        }}
+                    />
+                ))}
+
+                {proposedFacilities.map((facility, index) => (
+                    <Marker
+                        key={`proposed-${index}`}
+                        position={{
+                            lat: facility.latitude,
+                            lng: facility.longitude
+                        }}
+                        onClick={() => setSelectedFacility(facility)}
+                        icon={{
+                            url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                        }}
+                    />
+                ))}
+
+                {selectedFacility && (
+                    <InfoWindow
+                        position={{
+                            lat: selectedFacility.latitude,
+                            lng: selectedFacility.longitude
+                        }}
+                        onCloseClick={() => setSelectedFacility(null)}
+                    >
+                        <div className="p-2">
+                            <h3 className="font-bold">{selectedFacility.name}</h3>
+                            {selectedFacility.type && (
+                                <p className="text-sm text-gray-600">{selectedFacility.type}</p>
+                            )}
+                            {selectedFacility.TEQ && (
+                                <p className="text-sm">TEQ: {selectedFacility.TEQ}</p>
+                            )}
+                        </div>
+                    </InfoWindow>
+                )}
+
             </GoogleMap>
 
             {error && (
@@ -158,7 +280,6 @@ const CountyMap: React.FC = () => {
                 </div>
             )}
 
-            {/* Update legend colors to match new colors */}
             <div className="absolute bottom-4 left-4 bg-white p-4 rounded shadow-md">
                 <h3 className="text-sm font-bold mb-2">Social Vulnerability Index</h3>
                 <div className="flex flex-col gap-2">
@@ -181,7 +302,6 @@ const CountyMap: React.FC = () => {
                 </div>
             </div>
 
-            {/* Overlay panel for county details */}
             {selectedCounty && (
                 <div className="absolute top-4 right-4 bg-white p-4 rounded shadow-md w-80">
                     <h2 className="text-xl font-bold mb-2">County Details</h2>
