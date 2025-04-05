@@ -7,13 +7,6 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1 className="text-4xl font-bold">EcoJustice</h1>
       <p className="text-lg">A platform for environmental justice.</p>
-      <Image
-        src="/images/earth.png"
-        alt="Earth"
-        width={300}
-        height={300}
-        className="rounded-full"
-      />
     </main>
   );
 }

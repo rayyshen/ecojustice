@@ -1,38 +1,13 @@
 // CountyMap
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Data, Marker, InfoWindow } from '@react-google-maps/api';
-import { count } from 'console';
+import { CSVData, CountyData, FacilityData, DemographicData } from '@/types/data';
 
 const mapContainerStyle = { width: '100%', height: '600px' };
 const center = { lat: 37.8, lng: -96 };
 
-interface CountyData {
-    id: string;
-    demographics: { population: number; medianIncome: number; SVI: number };
-    airQuality: { AQI: number; status: string };
-}
-
-interface CSVData {
-    headers: string[];
-    rows: string[][];
-}
-
-interface FacilityData {
-    name: string;
-    latitude: number;
-    longitude: number;
-    TEQ: number;
-    type?: string;
-}
-
-interface DemographicData {
-    countyName: string;
-    minorityPercentage: number;
-}
-
 const CountyMap: React.FC = () => {
     const [selectedCounty, setSelectedCounty] = useState<CountyData | null>(null);
-    const [countyData, setCountyData] = useState<Map<string, number>>(new Map());
     const [csvData, setCsvData] = useState<CSVData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
