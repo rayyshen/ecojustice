@@ -27,6 +27,7 @@ const CountyMap: React.FC = () => {
     const [showCurrentFacilities, setShowCurrentFacilities] = useState(true);
     const [showProposedFacilities, setShowProposedFacilities] = useState(true);
     const [legendVisible, setLegendVisible] = useState(true);
+    const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
 
     const getColorForSVI = (svi: number) => {
         if (isNaN(svi) || svi === null || svi === 0) return '#E5E7EB';
@@ -258,6 +259,16 @@ const CountyMap: React.FC = () => {
         return data ? data.population.toLocaleString() : 'N/A';
     };
 
+    const getMarkerIcon = (iconPath: string) => {
+        if (!isGoogleLoaded || typeof google === 'undefined') {
+            return undefined;
+        }
+        return {
+            url: iconPath,
+            scaledSize: new google.maps.Size(32, 32)
+        };
+    };
+
     return (
         <div className="relative w-full">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
@@ -267,7 +278,10 @@ const CountyMap: React.FC = () => {
                 </div>
 
                 <div className="relative">
-                    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}>
+                    <LoadScript
+                        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''}
+                        onLoad={() => setIsGoogleLoaded(true)}
+                    >
                         <GoogleMap
                             mapContainerStyle={mapContainerStyle}
                             center={center}
@@ -335,10 +349,7 @@ const CountyMap: React.FC = () => {
                                         lng: facility.longitude
                                     }}
                                     onClick={() => setSelectedFacility(facility)}
-                                    icon={{
-                                        url: '/current-facility-marker.svg',
-                                        scaledSize: window.google ? new window.google.maps.Size(32, 32) : null
-                                    }}
+                                    icon={getMarkerIcon('/current-facility-marker.svg')}
                                 />
                             ))}
 
@@ -350,10 +361,7 @@ const CountyMap: React.FC = () => {
                                         lng: facility.longitude
                                     }}
                                     onClick={() => setSelectedFacility(facility)}
-                                    icon={{
-                                        url: '/proposed-facility-marker.svg',
-                                        scaledSize: window.google ? new window.google.maps.Size(32, 32) : null
-                                    }}
+                                    icon={getMarkerIcon('/proposed-facility-marker.svg')}
                                 />
                             ))}
 
@@ -641,16 +649,11 @@ const CountyMap: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg">
                     <div className="p-5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white">
                         <div className="flex items-center">
-                            <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </div>
                             <h3 className="text-lg font-bold">SVI Analysis</h3>
                         </div>
                     </div>
                     <div className="p-5">
-                        <p className="text-gray-600 mb-4">Social Vulnerability Index (SVI) indicates a community's capacity to respond to external stressors such as new pollutor in the community.</p>
+                        <p className="text-gray-600 mb-4">Social Vulnerability Index (SVI) indicates a community&apos;s capacity to respond to external stressors such as new pollutor in the community.</p>
                         <div className="flex justify-between items-center">
                             <span className="text-sm text-gray-500">Source: CDC/ATSDR</span>
                             <button className="text-emerald-600 text-sm font-medium hover:text-emerald-700 transition flex items-center">
@@ -666,11 +669,6 @@ const CountyMap: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg">
                     <div className="p-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                         <div className="flex items-center">
-                            <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </div>
                             <h3 className="text-lg font-bold">Demographic Data</h3>
                         </div>
                     </div>
@@ -691,11 +689,6 @@ const CountyMap: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg">
                     <div className="p-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white">
                         <div className="flex items-center">
-                            <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
                             <h3 className="text-lg font-bold">Industrial Facilities</h3>
                         </div>
                     </div>

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@arcgis/core": "^4.32.9",
+    "@google/generative-ai": "^0.24.0",
     "@react-google-maps/api": "^2.20.6",
     "arcgis": "^0.0.2",
     "framer-motion": "^12.6.3",

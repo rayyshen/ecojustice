@@ -85,7 +85,7 @@ export default function Home() {
                 Using data from the EPA, CDC, and Census Bureau to expose environmental racism and empower communities to take action.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-                <Link href="/dashboard">
+                <Link href="/map">
                   <button className="px-6 py-3 bg-emerald-600 text-white font-medium rounded-md hover:bg-emerald-700 transition shadow-md">
                     Explore the Map
                   </button>
@@ -121,7 +121,7 @@ export default function Home() {
                   </div>
                   <h3 className="text-2xl font-bold mb-2">Interactive Map</h3>
                   <p className="text-white/80 mb-6">Explore environmental hazards and demographic data across neighborhoods</p>
-                  <Link href="/dashboard">
+                  <Link href="/map">
                     <button className="px-5 py-2 bg-white text-emerald-700 rounded-md hover:bg-gray-100 transition">
                       Launch Map
                     </button>
@@ -163,8 +163,9 @@ export default function Home() {
             >
               <div className="h-12 w-12 bg-emerald-100 rounded-md flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                 </svg>
+
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Air Pollution Exposure</h3>
               <p className="text-gray-600">
@@ -221,15 +222,17 @@ export default function Home() {
                 About <span className="text-emerald-600">EcoJustice</span>
               </h2>
               <p className="text-gray-600">
-                EcoJustice is more than just an app—it's a movement toward environmental equity. We gather and analyze data from the EPA, CDC, and Census Bureau to reveal patterns of environmental racism across the United States.
+                EcoJustice is more than just an app—it&apos;s a movement toward environmental equity. We gather and analyze data from the EPA, CDC, and Census Bureau to reveal patterns of environmental racism across the United States.
               </p>
               <p className="text-gray-600">
                 Our platform puts powerful tools in the hands of communities, advocates, and policymakers to identify disparities and advocate for meaningful solutions.
               </p>
               <div className="pt-4">
-                <button className="px-6 py-3 bg-emerald-600 text-white font-medium rounded-md hover:bg-emerald-700 transition shadow-md">
-                  Learn More About Us
-                </button>
+                <Link href="/about">
+                  <button className="px-6 py-3 bg-emerald-600 text-white font-medium rounded-md hover:bg-emerald-700 transition shadow-md">
+                    Learn More About Us
+                  </button>
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -311,7 +314,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Action Tools</h3>
               <p className="text-gray-600 mb-4">
-                Connect with local activists, generate policy briefs, and access resources to advocate for change in your community.
+                Generate impactful letters/emails to your local representative and access resources to advocate for change in your community.
               </p>
             </motion.div>
           </div>

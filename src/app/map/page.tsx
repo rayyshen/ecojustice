@@ -1,10 +1,12 @@
+"use client";
+
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import CountyMap from '@/components/map';
 
-import '../app/globals.css'
+import '../globals.css'
 
 export default function MapPage() {
     return (

@@ -1,9 +1,12 @@
-// pages/about.tsx
+"use client";
+
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+
+import '../globals.css';
 
 export default function AboutPage() {
     return (
@@ -25,7 +28,7 @@ export default function AboutPage() {
                     </div>
 
                     <div className="hidden md:flex items-center space-x-8">
-                        <Link href="/dashboard" className="text-gray-700 hover:text-emerald-600 transition">Map</Link>
+                        <Link href="/map" className="text-gray-700 hover:text-emerald-600 transition">Map</Link>
                         <Link href="/take-action" className="text-gray-700 hover:text-emerald-600 transition">Take Action</Link>
                         <a href="https://github.com/rayyshen/ecojustice" className="text-gray-400 hover:text-emerald-400 transition">
                             <span className="sr-only">GitHub</span>
@@ -76,7 +79,8 @@ export default function AboutPage() {
                                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Inspiration: Africatown, Alabama</h2>
                                     <div className="prose prose-emerald max-w-none">
                                         <p>
-                                            One of my friends visited the Africatown graveyard, documented the gravesites there, and learned about the environmental racism that occurred there. This includes the surrounding paper mills, asphalt plants, petrochemical storage, and other heavy industries. He learned about the legacy of redlining and zoning laws which allowed heavy industries to be placed right next to residential homes.
+                                            While discussing what we did over the summer, one of my friends described his visit to a graveyard in Africa Town, Alabama. There, he documented the gravesites, and learned about the environmental racism that occurred there. This includes the surrounding paper mills, asphalt plants, petrochemical storage, and other heavy industries. He told me about the legacy of redlining and zoning laws which allowed heavy industries to be placed right next to residential homes.
+
                                         </p>
                                         <p>
                                             When I learned about this, I was inspired to make this app in order to attempt to prevent future instances of environmental racism.
@@ -218,12 +222,12 @@ export default function AboutPage() {
                                 </div>
                                 <div className="p-6">
                                     <p className="text-gray-600 mb-4">
-                                        The 85-mile stretch between Baton Rouge and New Orleans is home to over 150 petrochemical plants and refineries. This area, nicknamed "Cancer Alley," has cancer rates significantly higher than the national average, with predominantly Black communities bearing the brunt of this pollution.
+                                        The 85-mile stretch between Baton Rouge and New Orleans is home to over 150 petrochemical plants and refineries. This area, nicknamed &quot;Cancer Alley,&quot; has cancer rates significantly higher than the national average, with predominantly Black communities bearing the brunt of this pollution.
                                     </p>
                                     <p className="text-gray-600 mb-4">
-                                        The region's high concentration of industrial facilities in predominantly Black communities is a textbook example of environmental racism, with historical zoning decisions and industrial permitting favoring placement of hazardous facilities near communities of color.
+                                        The region&apos;s high concentration of industrial facilities in predominantly Black communities is a textbook example of environmental racism, with historical zoning decisions and industrial permitting favoring placement of hazardous facilities near communities of color.
                                     </p>
-                                    <a href="#" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
+                                    <a href="https://www.hrw.org/news/2024/01/25/us-louisianas-cancer-alley" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
                                         Read the full case study
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -243,15 +247,15 @@ export default function AboutPage() {
                                 <div className="p-6">
                                     <p className="text-gray-600 mb-4">
                                         Built in 1945 on an abandoned landfill, the Altgeld Gardens housing project was surrounded by 50 landfills,
-                                        hundreds of hazardous waste sites, and numerous industrial facilities. Known as a "toxic donut," this predominantly
+                                        hundreds of hazardous waste sites, and numerous industrial facilities. Known as a &quot;toxic donut,&quot; this predominantly
                                         Black community faced extreme pollution.
                                     </p>
                                     <p className="text-gray-600 mb-4">
                                         The area became a focus of environmental justice organizing when resident Hazel Johnson formed People for
-                                        Community Recovery in 1979. Her work earned her the title "mother of environmental justice" and brought
+                                        Community Recovery in 1979. Her work earned her the title &quot;mother of environmental justice&quot; and brought
                                         national attention to the issue of environmental racism.
                                     </p>
-                                    <a href="#" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
+                                    <a href="https://blog.nwf.org/2024/11/community-spotlight-altgeld-gardens/" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
                                         Read the full case study
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -279,7 +283,7 @@ export default function AboutPage() {
                                         of cancer and other health issues. Despite this, cleanup efforts have been slow, and many Navajo families
                                         continue to live with contamination decades later.
                                     </p>
-                                    <a href="#" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
+                                    <a href="https://opvp.navajo-nsn.gov/a-call-for-justice-addressing-uranium-mining-catastrophe-on-navajo-land/" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
                                         Read the full case study
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -298,12 +302,12 @@ export default function AboutPage() {
                                 </div>
                                 <div className="p-6">
                                     <p className="text-gray-600 mb-4">
-                                        The Flint water crisis began in 2014 when the city's water source was changed without proper treatment, exposing residents to lead contamination and other toxins. The predominantly Black and low-income community's concerns were ignored by officials for months.
+                                        The Flint water crisis began in 2014 when the city&apos;s water source was changed without proper treatment, exposing residents to lead contamination and other toxins. The predominantly Black and low-income community&apos;s concerns were ignored by officials for months.
                                     </p>
                                     <p className="text-gray-600 mb-4">
                                         This crisis highlighted how environmental racism can manifest through neglect and disinvestment in infrastructure serving minority communities, as well as through the dismissal of community concerns by those in power.
                                     </p>
-                                    <a href="#" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
+                                    <a href="https://www.nrdc.org/stories/flint-water-crisis-everything-you-need-know" className="text-emerald-600 font-medium hover:text-emerald-700 flex items-center">
                                         Read the full case study
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -386,7 +390,7 @@ export default function AboutPage() {
                                                 Use Data for Advocacy
                                             </h3>
                                             <p className="text-emerald-100 pl-11">
-                                                Download reports from EcoJustice to support your advocacy. Data-driven arguments can be powerful tools for change.
+                                                Create reports using data from EcoJustice to support your advocacy. Data-driven arguments can be powerful tools for change.
                                             </p>
                                         </div>
                                     </div>
