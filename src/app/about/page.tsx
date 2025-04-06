@@ -77,7 +77,7 @@ export default function AboutPage() {
                             <div className="md:flex">
                                 <div className="md:w-1/2 p-8 md:p-10">
                                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Inspiration: Africatown, Alabama</h2>
-                                    <div className="prose prose-emerald max-w-none">
+                                    <div className="prose prose-emerald max-w-none text-black">
                                         <p>
                                             While discussing what we did over the summer, one of my friends described his visit to a graveyard in Africa Town, Alabama. There, he documented the gravesites, and learned about the environmental racism that occurred there. This includes the surrounding paper mills, asphalt plants, petrochemical storage, and other heavy industries. He told me about the legacy of redlining and zoning laws which allowed heavy industries to be placed right next to residential homes.
 
@@ -162,7 +162,7 @@ export default function AboutPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="bg-blue-50 p-4 rounded-lg">
                                             <h4 className="font-bold text-blue-800 mb-2">Socioeconomic Status</h4>
-                                            <ul className="text-sm space-y-1">
+                                            <ul className="text-sm space-y-1 text-black">
                                                 <li>• Below 150% poverty</li>
                                                 <li>• Unemployed</li>
                                                 <li>• Housing Cost Burden</li>
@@ -172,7 +172,7 @@ export default function AboutPage() {
                                         </div>
                                         <div className="bg-green-50 p-4 rounded-lg">
                                             <h4 className="font-bold text-green-800 mb-2">Household Composition</h4>
-                                            <ul className="text-sm space-y-1">
+                                            <ul className="text-sm space-y-1 text-black">
                                                 <li>• Aged 65 or older</li>
                                                 <li>• Aged 17 or younger</li>
                                                 <li>• Disability status</li>
@@ -181,14 +181,14 @@ export default function AboutPage() {
                                         </div>
                                         <div className="bg-purple-50 p-4 rounded-lg">
                                             <h4 className="font-bold text-purple-800 mb-2">Minority Status & Language</h4>
-                                            <ul className="text-sm space-y-1">
+                                            <ul className="text-sm space-y-1 text-black">
                                                 <li>• Racial/ethnic minority</li>
                                                 <li>• Limited English proficiency</li>
                                             </ul>
                                         </div>
                                         <div className="bg-amber-50 p-4 rounded-lg">
                                             <h4 className="font-bold text-amber-800 mb-2">Housing & Transportation</h4>
-                                            <ul className="text-sm space-y-1">
+                                            <ul className="text-sm space-y-1 text-black">
                                                 <li>• Multi-unit structures</li>
                                                 <li>• Mobile homes</li>
                                                 <li>• Crowding</li>

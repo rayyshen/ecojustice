@@ -140,7 +140,7 @@ const LetterGenerator: React.FC = () => {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                                className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                                 required
                             />
                         </div>
@@ -153,7 +153,7 @@ const LetterGenerator: React.FC = () => {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                                className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                                 required
                             />
                         </div>
@@ -166,7 +166,7 @@ const LetterGenerator: React.FC = () => {
                                 name="zipCode"
                                 value={formData.zipCode}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                                className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                                 required
                                 maxLength={5}
                                 placeholder="Enter 5-digit ZIP code"
@@ -182,7 +182,7 @@ const LetterGenerator: React.FC = () => {
                             value={formData.communityIssue}
                             onChange={handleChange}
                             rows={3}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                            className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                             placeholder="Example: There is a proposed chemical plant near my neighborhood that would impact our air quality and water safety."
                             required
                         ></textarea>
@@ -195,7 +195,7 @@ const LetterGenerator: React.FC = () => {
                             name="environmentalConcern"
                             value={formData.environmentalConcern}
                             onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                            className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                             required
                         >
                             <option value="">Select a concern</option>
@@ -218,7 +218,7 @@ const LetterGenerator: React.FC = () => {
                             value={formData.personalImpact}
                             onChange={handleChange}
                             rows={3}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-black"
                             placeholder="Example: My children suffer from asthma that gets worse when air quality is poor, and we've noticed more respiratory issues in our neighborhood."
                         ></textarea>
                     </div>
@@ -231,7 +231,7 @@ const LetterGenerator: React.FC = () => {
                             value={formData.desiredOutcome}
                             onChange={handleChange}
                             rows={3}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                            className="text-black w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                             placeholder="Example: Stricter regulations on industrial emissions, required community health impact assessments, or cancellation of the proposed facility."
                         ></textarea>
                     </div>
@@ -356,7 +356,7 @@ const LetterGenerator: React.FC = () => {
                         Review your letter below. You can copy it to your clipboard and send it to your selected representatives.
                     </p>
 
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6 whitespace-pre-line">
+                    <div className="text-black bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6 whitespace-pre-line">
                         {letterContent}
                     </div>
 
