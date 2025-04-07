@@ -16,13 +16,13 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const CIVIC_API_KEY = process.env.GOOGLE_CIVIC_API_KEY;
+        const CIVIC_API_KEY = process.env.GEMINI_API_KEY;
         if (!CIVIC_API_KEY) {
             throw new Error('Google Civic API key is not configured');
         }
 
         const response = await fetch(
-            `https://civicinfo.googleapis.com/civicinfo/v2/representatives?address=${zipCode}&roles=legislatorLowerBody&roles=legislatorUpperBody&roles=headOfGovernment&roles=deputyHeadOfGovernment&roles=executiveCouncil&key=AIzaSyA6SOZc2cGVG1Kwa4SmYeSbRwRwkI_d3aE`
+            `https://civicinfo.googleapis.com/civicinfo/v2/representatives?address=${zipCode}&roles=legislatorLowerBody&roles=legislatorUpperBody&roles=headOfGovernment&roles=deputyHeadOfGovernment&roles=executiveCouncil&key=${CIVIC_API_KEY}`
         );
 
         if (!response.ok) {
